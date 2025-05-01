@@ -168,11 +168,11 @@ mockService.Setup(s => s.GetData()).Returns("Test");
 ```
 
 ### Additional Tools ###
-Code Coverage: Use dotnet test --collect:"XPlat Code Coverage" to measure test coverage. Install the coverlet.collector NuGet package if needed.
+- **Code Coverage:** Use dotnet test --collect:"XPlat Code Coverage" to measure test coverage. Install the coverlet.collector NuGet package if needed.
 
-Test Runners: Visual Studio’s Test Explorer or third-party tools like ReSharper can enhance test execution.
+- **Test Runners:** Visual Studio’s Test Explorer or third-party tools like ReSharper can enhance test execution.
 
-Other Frameworks: Explore NUnit or xUnit for alternative testing styles.
+- **Other Frameworks:** Explore **NUnit** or **xUnit** for alternative testing styles.
 
 ### Conclusion ###
 Unit testing in .NET with MSTest is straightforward and powerful. By creating a test project, writing tests with the AAA pattern, and running them regularly, you can ensure your application is robust and maintainable. Start small, test critical components, and gradually expand your test suite.
