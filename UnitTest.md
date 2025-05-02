@@ -1,179 +1,49 @@
-## Unit Testing in a .NET Application ##
-### Overview ###
-Unit testing is a software testing approach where individual components or functions of an application are tested in isolation to ensure they work as expected. In .NET applications, unit testing is commonly performed using frameworks like MSTest, NUnit, or xUnit. These frameworks help developers write, organize, and execute tests to validate code behavior.
-This writeup provides a beginner-friendly guide to implementing unit testing in a .NET application using MSTest. It covers setting up a test project, writing unit tests, and running them.
-### Why Unit Testing? ###
-- Ensures individual components work correctly.
-
-- Facilitates code refactoring by catching regressions.
-
-- Improves code quality and maintainability.
-
-- Supports Test-Driven Development (TDD) workflows.
-
-### Prerequisites ###
-- .NET SDK installed (version 6.0 or later recommended).
-
-- A code editor like Visual Studio or Visual Studio Code.
-
-- Basic knowledge of C# and .NET.
-
-### Step-by-Step Guide ###
-**1. Create a .NET Application**
-Start by creating a simple .NET class library or console application that contains the logic you want to test.
-```bash
-bash
-
-dotnet new classlib -n MyApp
-cd MyApp
-```
-
-Example code (Calculator.cs in MyApp project):
-```csharp
-csharp
-
-namespace MyApp;
-
-public class Calculator
-{
-    public int Add(int a, int b) => a + b;
-    public int Divide(int a, int b)
-    {
-        if (b == 0)
-            throw new DivideByZeroException();
-        return a / b;
-    }
-}
-```
-
-**2. Create a Test Project**
-Create a separate test project to house your unit tests. Use the MSTest template for simplicity.
-```bash
-bash
-
-dotnet new mstest -n MyApp.Tests
-cd MyApp.Tests
-```
-
-Add a reference to the application project:
-```bash
-bash
-
-dotnet add reference ../MyApp/MyApp.csproj
-```
-
-**3. Write Unit Tests**
-In the test project, create test classes and methods to validate the behavior of your application code. Use attributes like [TestClass] and [TestMethod] to mark classes and methods for MSTest.
-Example test file (CalculatorTests.cs in MyApp.Tests):
-```csharp
-csharp
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MyApp;
-
-namespace MyApp.Tests;
-
-[TestClass]
-public class CalculatorTests
-{
-    private readonly Calculator _calculator = new();
-
-    [TestMethod]
-    public void Add_ValidNumbers_ReturnsSum()
-    {
-        // Arrange
-        int a = 5;
-        int b = 3;
-        int expected = 8;
-
-        // Act
-        int result = _calculator.Add(a, b);
-
-        // Assert
-        Assert.AreEqual(expected, result);
-    }
-
-    [TestMethod]
-    public void Divide_ValidNumbers_ReturnsQuotient()
-    {
-        // Arrange
-        int a = 10;
-        int b = 2;
-        int expected = 5;
-
-        // Act
-        int result = _calculator.Divide(a, b);
-
-        // Assert
-        Assert.AreEqual(expected, result);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(DivideByZeroException))]
-    public void Divide_ByZero_ThrowsException()
-    {
-        // Arrange
-        int a = 10;
-        int b = 0;
-
-        // Act
-        _calculator.Divide(a, b);
-
-        // Assert: Expects DivideByZeroException
-    }
-}
-```
-
-**4. Run the Tests**
-Run the tests using the .NET CLI from the test project directory:
-```bash
-bash
-
-dotnet test
-```
-This command compiles the test project, executes all test methods, and displays the results (e.g., passed or failed tests).
-**5. Analyze Test Results**
-- If all tests pass, your code behaves as expected.
-
-- If a test fails, review the test output for details, fix the code or the test, and rerun.
-
-### Best Practices ###
-- **One assertion per test:** Each test method should verify a single behavior.
-
-- **Use AAA pattern:** Structure tests with Arrange, Act, and Assert sections.
-
-- **Test edge cases:** Include tests for boundary conditions, null inputs, and exceptions.
-
-- **Keep tests independent:** Tests should not rely on shared state or order of execution.
-
-- **Use mocking:** For dependencies (e.g., database or API calls), use libraries like Moq to create mock objects.
-
-- **Run tests frequently:** Integrate tests into your CI/CD pipeline for continuous validation.
-
-### Example: Adding a Mocking Library (Optional) ###
-If your application has dependencies, you can use Moq for mocking. Install it in the test project:
-```bash
-bash
-
-dotnet add package Moq
-```
-
-Example with Moq (not included in the main example for brevity):
-```csharp
-csharp
-
-// Mocking a dependency
-var mockService = new Mock<IMyService>();
-mockService.Setup(s => s.GetData()).Returns("Test");
-```
-
-### Additional Tools ###
-- **Code Coverage:** Use dotnet test --collect:"XPlat Code Coverage" to measure test coverage. Install the coverlet.collector NuGet package if needed.
-
-- **Test Runners:** Visual Studio’s Test Explorer or third-party tools like ReSharper can enhance test execution.
-
-- **Other Frameworks:** Explore **NUnit** or **xUnit** for alternative testing styles.
-
-### Conclusion ###
-Unit testing in .NET with MSTest is straightforward and powerful. By creating a test project, writing tests with the AAA pattern, and running them regularly, you can ensure your application is robust and maintainable. Start small, test critical components, and gradually expand your test suite.
-
+## Unit Testing Best Practises ##
+Unit testing ensures individual components of your code work as expected. Here are best practices for effective unit testing:
+### Write Clear, Focused Tests ###  
+- Each test should verify one specific behavior or functionality.  
+- Use descriptive test names (e.g., test_calculator_adds_two_numbers_correctly).  
+- Follow the Arrange-Act-Assert (AAA) pattern: set up the test, perform the action, verify the result.
+### Test in Isolation  
+- Mock or stub dependencies (e.g., databases, APIs) to isolate the unit being tested.  
+- Avoid testing multiple components together; that’s for integration tests.
+### Keep Tests Fast  
+- Unit tests should run quickly to encourage frequent execution.  
+- Avoid I/O operations like file access or network calls in unit tests.
+### Ensure Repeatability  
+- Tests should produce consistent results regardless of when or where they run.  
+- Avoid reliance on external states (e.g., system time, random data) or use controlled seeds.
+### Cover Edge Cases and Failure Modes  
+- Test boundary conditions, invalid inputs, and error scenarios.  
+- Verify how the code handles exceptions or unexpected behavior.
+### Aim for High Code Coverage, but Prioritize Quality  
+- Strive for coverage of critical paths, but don’t chase 100% at the expense of meaningful tests.  
+- Use tools like coverage.py (Python) or JaCoCo (Java) or Coverlet (.Net) to measure coverage.
+### Keep Tests Maintainable  
+- Avoid duplicating test code; use helper methods or setup/teardown functions.  
+- Refactor tests when code changes, but keep them simple to reduce maintenance overhead.
+### Run Tests Automatically  
+- Integrate tests into CI/CD pipelines to catch issues early.  
+- Run tests on every commit or pull request.
+### Use Appropriate Testing Frameworks  
+- Choose frameworks suited to your language (e.g., JUnit for Java, pytest for Python, Jest for JavaScript, MSUnit for .Net).  
+- Leverage features like assertions, mocks, and test runners for efficiency.
+### Write Tests Early  
+- Adopt Test-Driven Development (TDD) where possible: write tests before implementing code.  
+- This clarifies requirements and ensures testability from the start.
+### Avoid Testing Implementation Details  
+- Focus on testing the public interface and expected behavior, not internal logic.  
+- This prevents brittle tests that break with refactoring.
+### Document Test Purpose  
+- Add comments or use clear naming to explain why a test exists, especially for complex scenarios.  
+- This helps future developers understand the intent.
+### Handle Async Code Properly  
+- For asynchronous code, ensure tests wait for promises or async operations to complete.  
+- Use framework-specific tools (e.g., async/await in JavaScript, pytest-asyncio in Python).
+### Avoid Over-Mocking  
+- Mock only what’s necessary to isolate the unit. Over-mocking can lead to tests that pass but don’t reflect real behavior.
+### Review and Refactor Tests  
+- Periodically review tests for relevance and remove obsolete ones.  
+- Ensure tests remain aligned with the codebase as it evolves.
+  
+By following these practices, you’ll create reliable, maintainable unit tests that improve code quality and catch issues early.
